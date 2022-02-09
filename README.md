@@ -30,6 +30,10 @@ git remote add origin https://github.com/ankit12345678/credit_risk_mlops
 ```bash
 git branch -M main && git push -u origin main
 ```
+overall command
+```bash
+git add . && git commit -m "params added" && git push origin main
+```
 ## After Creating Every Stage In DVC.yaml File Use below Command
 ```bash
 dvc repro
