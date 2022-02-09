@@ -49,3 +49,9 @@ stages:
         estimators.RandomForestClassifier.params.max_depth: 8
         estimators.RandomForestClassifier.params.max_features: 6
         estimators.RandomForestClassifier.params.n_estimators: 386
+  log_production_model:
+    cmd: python src/log_production_model.py --config=params.yaml
+    deps:
+    - path: src/log_production_model.py
+      md5: 366bfc4863c7b4c763942fd408447903
+      size: 1838
