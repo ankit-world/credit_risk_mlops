@@ -3,10 +3,10 @@ name: Python application
 on:
   push:
     branches:
-    - main
+    - main-mlflows
   pull_request:
     branches:
-    - main
+    - main-mlflows
 
 jobs:
   build:
