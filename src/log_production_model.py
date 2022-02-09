@@ -27,6 +27,7 @@ def log_production_model(config_path):
     highest = runs["metrics.accuracy"].sort_values(ascending=False)[0]
     highest_run_id = runs[runs["metrics.accuracy"] == highest]["run_id"][0]
     
+    
     client = MlflowClient()
     for mv in client.search_model_versions(f"name='{model_name}'"):
         mv = dict(mv)
