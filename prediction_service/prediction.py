@@ -3,7 +3,7 @@ import os
 import json
 import joblib
 import numpy as np
-import pandas as pd
+
 
 params_path = "params.yaml"
 schema_path = os.path.join("prediction_service", "schema_in.json")
