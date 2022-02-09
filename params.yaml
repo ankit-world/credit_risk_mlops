@@ -17,12 +17,13 @@ split_data:
 estimators:
   RandomForestClassifier:
     params:
-      max_depth: 8
-      max_features: 5
-      n_estimators: 103
-#        max_depth: 8
-#        max_features: 6
-#        n_estimators: 386
+#      max_depth: 8
+#      max_features: 5
+#      n_estimators: 103
+        max_depth: 8
+        max_features: 6
+        n_estimators: 386
+    
 
 model_dir: saved_models
 
@@ -31,3 +32,10 @@ reports:
   scores: report\scores.json
 
 webapp_model_dir: prediction_service/model/model.joblib
+
+mlflow_config:
+  artifacts_dir: artifacts
+  experiment_name: Random Forest classification
+  run_name: mlops
+  registered_model_name: RandomForestCreditRiskModel
+  remote_server_uri: http://127.0.0.1:5000

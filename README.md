@@ -65,3 +65,12 @@ To Create The Standard pypi package, there is command
 ```bash
 python setup.py sdist bdist_wheel
 ```
+
+create an artifacts folder
+
+mlflow server command
+```bash
+mlflow server \
+    --backend-store-uri sqlite:///mlflow.db \
+    --default-artifact-root ./artifacts \
+    --host 127.0.0.1 -p 5000

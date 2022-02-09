@@ -2,6 +2,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from get_data import read_params
+from urllib.parse import urlparse
 import pandas as pd
 import numpy as np
 import argparse
@@ -10,6 +11,7 @@ import joblib
 import json
 import sys
 import os
+import mlflow
 
 
 def eval_metrics(actual, pred):
@@ -42,48 +44,44 @@ def train_and_evaluate(config_path):
     train_x = train.drop(target, axis=1)
     test_x = test.drop(target, axis=1)
 
-    rfc = RandomForestClassifier(max_depth=max_depth,
-                                 max_features=max_features,
-                                 n_estimators=n_estimators,
-                                 random_state=random_state)
-    rfc.fit(train_x, train_y)
+################### MLFLOW ###############################
+    mlflow_config = config["mlflow_config"]
+    remote_server_uri = mlflow_config["remote_server_uri"]
 
-    predicted_qualities = rfc.predict(test_x)
+    mlflow.set_tracking_uri(remote_server_uri)
 
-    (accuracy, precision, recall, roc_auc) = eval_metrics(test_y, predicted_qualities)
+    mlflow.set_experiment(mlflow_config["experiment_name"])
 
-    print("Random Forest Classifier Model (max_depth=%f, max_features=%f, n_estimators=%f):" % (max_depth,
-                                                                                                max_features,
-                                                                                                n_estimators))
-    print("Accuracy: %s" % accuracy)
-    print("Precision: %s" % precision)
-    print("Recall: %s" % recall)
-    print("Roc_Auc_Score: %s" % roc_auc)
+    with mlflow.start_run(run_name=mlflow_config["run_name"]) as mlops_run:
+        rfc = RandomForestClassifier(max_depth=max_depth,
+                                    max_features=max_features,
+                                    n_estimators=n_estimators,
+                                    random_state=random_state)
+        rfc.fit(train_x, train_y)
 
-    scores_file = config["reports"]["scores"]
-    params_file = config["reports"]["params"]
+        predicted_qualities = rfc.predict(test_x)
 
-    with open(scores_file, "w") as f:
-        scores = {
-            "accuracy" : accuracy,
-            "precision" : precision,
-            "recall" : recall,
-            "roc_auc" : roc_auc
-        }
-        json.dump(scores, f, indent=4)
+        (accuracy, precision, recall, roc_auc) = eval_metrics(test_y, predicted_qualities)
 
-    with open(params_file, "w") as f:
-        scores = {
-            "max_depth": max_depth,
-            "max_features": max_features,
-            "n_estimators": n_estimators
-        }
-        json.dump(scores, f, indent=4)
+        mlflow.log_param("max_depth", max_depth)
+        mlflow.log_param("max_features", max_features)
+        mlflow.log_param("n_estimators", n_estimators)
 
-    os.makedirs(model_dir, exist_ok=True)
-    model_path = os.path.join(model_dir, "model.joblib")
+        mlflow.log_metric("accuracy", accuracy)
+        mlflow.log_metric("precision", precision)
+        mlflow.log_metric("recall", recall)
+        mlflow.log_metric("roc_auc", roc_auc)
+        tracking_url_type_store = urlparse(mlflow.get_artifact_uri()).scheme
 
-    joblib.dump(rfc, model_path)
+        if tracking_url_type_store != "file":
+            mlflow.sklearn.log_model(
+                rfc, 
+                "model", 
+                registered_model_name=mlflow_config["registered_model_name"])
+        else:
+            mlflow.sklearn.load_model(rfc, "model")
+
+##########################################################
 
 
 if __name__ == "__main__":
