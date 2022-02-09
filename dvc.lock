@@ -47,15 +47,15 @@ stages:
     params:
       params.yaml:
         estimators.RandomForestClassifier.params.max_depth: 8
-        estimators.RandomForestClassifier.params.max_features: 6
-        estimators.RandomForestClassifier.params.n_estimators: 386
+        estimators.RandomForestClassifier.params.max_features: 5
+        estimators.RandomForestClassifier.params.n_estimators: 103
     outs:
     - path: report/params.json
-      md5: 9478e2041f3ecdf583ccf764627d993d
+      md5: edaa07c7b0c1ce0cfa93021c8442be62
       size: 74
     - path: report\scores.json
-      md5: 29e83d512d59dafd64af32f63bc75e98
-      size: 136
+      md5: 39f06757b172687a7010ac6046cf80a0
+      size: 135
     - path: saved_models\model.joblib
-      md5: b365976c7127e18443b77f903e638622
-      size: 4149834
+      md5: 95b6793d8c3be7b01a45c4f885b511e3
+      size: 1142349
