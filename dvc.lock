@@ -1,0 +1,34 @@
+schema: '2.0'
+stages:
+  load_data:
+    cmd: python src\load_data.py --config=params.yaml
+    deps:
+    - path: data_given\credit.csv
+      md5: d97a9236772dccd8e215323639ffd47c
+      size: 50942
+    - path: src\get_data.py
+      md5: da000e16fae691d737581e9513f46ea9
+      size: 850
+    - path: src\load_data.py
+      md5: 6ab150eee37f213d3034a87990fb403c
+      size: 500
+    outs:
+    - path: data\raw\credit.csv
+      md5: 81dc785bfe71cd7dc1a075a59cd7e00d
+      size: 35973
+  split_data:
+    cmd: python src\split_data.py --config=params.yaml
+    deps:
+    - path: data\raw\credit.csv
+      md5: 81dc785bfe71cd7dc1a075a59cd7e00d
+      size: 35973
+    - path: src\split_data.py
+      md5: 8c20ab52cdf6705bb7e03e598222679a
+      size: 970
+    outs:
+    - path: data\processed\test_credit.csv
+      md5: 41f913b2a2f61d60ff5e8f8bc3d58985
+      size: 7341
+    - path: data\processed\train_credit.csv
+      md5: 6a8942ad5a9241bf61447382ee9c4bc9
+      size: 28812
