@@ -1,7 +1,6 @@
 ## User Interface
-```bash
-https://credit--risk.herokuapp.com/
-```
+
+Heroku Cloud : https://ipinusrance.herokuapp.com/
 
 ## Create Environment
 ```bash
